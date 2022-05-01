@@ -1,0 +1,52 @@
+:root {
+  --pixel-size: 8px;
+}
+
+.dpad {
+  position: fixed;
+  right: calc(var(--pixel-size) * 2);
+  bottom: calc(var(--pixel-size) * 2);
+  width: calc(var(--pixel-size) * 37);
+  height: calc(var(--pixel-size) * 38);
+  z-index: 10;
+}
+.dpad-button {
+  appearance: none;
+  outline: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+.dpad-button svg {
+  display: block;
+  height: calc(var(--pixel-size) * 13);
+}
+
+.dpad-button.pressed .Arrow_arrow-inset { stroke:#07c2cc; }
+.dpad-button.pressed .Arrow_arrow-body { stroke:#17dfea; }
+
+.dpad-up {
+  position: absolute;
+  left: calc(var(--pixel-size) * 12);
+  top: 0;
+}
+.dpad-down {
+  position: absolute;
+  bottom: var(--pixel-size);
+  left: calc(var(--pixel-size) * 12);
+}
+.dpad-left {
+  position: absolute;
+  top: calc(var(--pixel-size) * 12);
+  left: 0;
+}
+.dpad-right {
+  position: absolute;
+  top: calc(var(--pixel-size) * 12);
+  right: 0;
+}
+
+.dpad {
+  user-select: none;
+}

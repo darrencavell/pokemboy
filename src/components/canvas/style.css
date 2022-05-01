@@ -1,0 +1,19 @@
+@keyframes characterWalkDown {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
+}
+
+@keyframes characterWalkRight {
+  0% { transform: translate(0, -50%); }
+  100% { transform: translate(-100%, -50%); }
+}
+
+@keyframes characterWalkUp {
+  0% { transform: translate(0, -75%); }
+  100% { transform: translate(-100%, -75%); }
+}
+
+@keyframes characterWalkLeft {
+  0% { transform: translate(0, -25%); }
+  100% { transform: translate(-100%, -25%); }
+}
