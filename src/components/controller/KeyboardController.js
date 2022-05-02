@@ -34,8 +34,8 @@ const KeyboardArrowController = props => {
         ...handleLeftKey,
         ...handleRightKey
       ].map(event => {
-        event.removeEventListener('keydown', event.handleKeyDown);
-        event.removeEventListener('keyup', event.handleKeyUp);
+        body.removeEventListener('keydown', event.handleKeyDown);
+        body.removeEventListener('keyup', event.handleKeyUp);
       })
     }
   }, []);

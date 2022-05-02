@@ -1,7 +1,7 @@
 import './style.css';
 
 const PadController = props => {
-  const { arrows, setArrows, onPressed, onReleased } = props;
+  const { arrows, events, setArrows, onPressed, onReleased } = props;
 
   const handleTouchStart = direction => {
     setArrows(onPressed(direction, arrows))
@@ -11,7 +11,7 @@ const PadController = props => {
     setArrows(onReleased(direction, arrows))
   }
 
-  return (
+  return events.length === 0 && (
     <>
       <div className="dpad">
         <div className="DemoDirectionUI flex-center">

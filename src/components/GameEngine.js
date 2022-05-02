@@ -14,7 +14,8 @@ const GameEngine = props => {
       display: flex;
       justifyContent: center;
       alignItems: center;
-      background: rgb(154, 195, 207);
+      max-width: 750px;
+      margin: 0 auto;
     `}>
       <main css={css`
         position: relative;

@@ -2,11 +2,14 @@ import React, { useEffect, useRef } from 'react';
 
 import { useQuery, gql } from '@apollo/client';
 
-// import { GameEnginerProvider, useStore } from './lib/context';
+import { useStore } from './lib/context';
 // import GameEngine from './lib/engine/GameEngine';
 import GameEngine from './components/GameEngine';
 import Background from './components/Background';
 import OverworldWrapper from './components/OverworldWrapper';
+import BattleWrapper from './components/BattleWrapper';
+import Message from './components/Message';
+import { ENCOUNTER_POKEMON, OVERWORLD } from './lib/constant';
 
 const Home = () => {
   // const GET_POKEMONS = gql`
@@ -41,29 +44,22 @@ const Home = () => {
   // console.log('Response from server', data);
   // const canvasRef = useRef();
 
-  useEffect(() => {
-    // const canvas = canvasRef.current;
-    // const context = canvas.getContext('2d');
+  const { store } = useStore();
 
-    // const gameEngine = new GameEngine({ canvas, context });
-    // gameEngine.initialize();
-
-    // dispatch({
-    //   type: INITIALIZE_CANVAS,
-    //   payload: context
-    // });
-  }, []);
+  console.log('store', store);
 
   return (
-    // <GameEnginerProvider>
-    <GameEngine>
+    <>
       <Background />
-      <OverworldWrapper />
-    </GameEngine>
+      <GameEngine>
+        {store.app.gameType === OVERWORLD && <OverworldWrapper />}
+        {store.app.gameType === ENCOUNTER_POKEMON && <BattleWrapper />}
+        <Message content={store.app.textMessage} />
+      </GameEngine>
+    </>
     // <>
     //   <canvas id="pokecanvas" ref={canvasRef} />
     // </>
-    // </GameEnginerProvider>
   )
 }
 

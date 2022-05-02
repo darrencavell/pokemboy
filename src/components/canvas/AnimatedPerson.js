@@ -5,9 +5,10 @@ import { css } from '@emotion/react';
 
 import './style.css';
 
-const CanvasPerson = props => {
-  const { direction, gameObject, scale, src } = props;
+const AnimatedPerson = props => {
+  const { gameObject, scale, src } = props;
 
+  const direction = gameObject?.currentBehaviour?.direction || '';
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -57,13 +58,13 @@ const CanvasPerson = props => {
     let x = 0, y = 0;
     switch (direction) {
       case 'UP':
-        return { x, y: -gameObject.movingProgress / 32 * 16 * scale };
+        return { x, y: -gameObject.movingProgress / 16 * 16 * scale };
       case 'DOWN':
-        return { x, y: gameObject.movingProgress / 32 * 16 * scale };
+        return { x, y: gameObject.movingProgress / 16 * 16 * scale };
       case 'LEFT':
-        return { x: -gameObject.movingProgress / 32 * 16 * scale, y };
+        return { x: -gameObject.movingProgress / 16 * 16 * scale, y };
       case 'RIGHT':
-        return { x: gameObject.movingProgress / 32 * 16 * scale, y };
+        return { x: gameObject.movingProgress / 16 * 16 * scale, y };
       default:
         return { x, y };
     }
@@ -98,4 +99,4 @@ const CanvasPerson = props => {
   )
 }
 
-export default CanvasPerson;
+export default AnimatedPerson;

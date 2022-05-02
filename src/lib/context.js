@@ -1,21 +1,27 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
+import { createContext, useContext, useReducer } from 'react';
 
-import storeReducer from './store/reducer';
-import { INITIALIZE_CANVAS } from './store/app/reducer';
+import storeReducers from './store/reducers';
 
 const GameEngineContext = createContext({
-  state: {},
+  store: {
+    app: {
+      gameType: 'overworld',
+      textMessage: null,
+      events: []
+    }
+  },
+  dispatch: () => {}
 });
 
 export const useStore = () => useContext(GameEngineContext);
 
 export const GameEnginerProvider = (props) => {
-  const { children } = props;
+  const { children, initialState } = props;
 
-  const [state, dispatch] = useReducer(storeReducer, {});
+  const [store, dispatch] = useReducer(storeReducers, initialState);
 
   return (
-    <GameEngineContext.Provider value={{ state, dispatch }}>
+    <GameEngineContext.Provider value={{ store, dispatch }}>
       {children}
     </GameEngineContext.Provider>
   )

@@ -10,6 +10,8 @@ import {
 
 import Home from './Home';
 
+import { GameEnginerProvider } from './lib/context';
+import { initialState } from './lib/store/app/reducer';
 import apolloClient from './graphql/apolloClient';
 
 const App = () => {
@@ -25,11 +27,13 @@ const App = () => {
         `}
       />
       <ApolloProvider client={apolloClient}>
-        <Router>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-          </Routes>
-        </Router>
+        <GameEnginerProvider initialState={initialState}>
+          <Router>
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+            </Routes>
+          </Router>
+        </GameEnginerProvider>
       </ApolloProvider>
     </>
   )

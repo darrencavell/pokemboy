@@ -3,9 +3,14 @@
 import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 
-const CanvasMap = props => {
-  const { scale, direction, gameObject, src } = props;
+const MoveableMap = props => {
+  const {
+    gameObject,
+    scale,
+    src,
+  } = props;
 
+  const direction = gameObject?.currentBehaviour?.direction || '';
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -36,13 +41,13 @@ const CanvasMap = props => {
     let x = 0, y = 0;
     switch (direction) {
       case 'UP':
-        return { x, y: gameObject.movingProgress / 32 * 16 * scale / 2 };
+        return { x, y: gameObject.movingProgress / 16 * 16 * scale / 2 };
       case 'DOWN':
-        return { x, y: -gameObject.movingProgress / 32 * 16 * scale / 2 };
+        return { x, y: -gameObject.movingProgress / 16 * 16 * scale / 2 };
       case 'LEFT':
-        return { x: gameObject.movingProgress / 32 * 16 * scale / 2, y };
+        return { x: gameObject.movingProgress / 16 * 16 * scale / 2, y };
       case 'RIGHT':
-        return { x: -gameObject.movingProgress / 32 * 16 * scale / 2, y };
+        return { x: -gameObject.movingProgress / 16 * 16 * scale / 2, y };
       default:
         return { x, y };
     }
@@ -69,4 +74,4 @@ const CanvasMap = props => {
   )
 }
 
-export default CanvasMap;
+export default MoveableMap;

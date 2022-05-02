@@ -1,25 +1,18 @@
-import { useState } from 'react';
-
+import { useStore } from '../lib/context';
 import UserController from './controller/UserController';
 import Overworld from './Overworld';
-import Person from './Person';
 
 const OverworldWrapper = props => {
-
-  const [state, setState] = useState({
-    events: [
-      { type: 'ENCOUNTER_POKEMON' }
-    ]
-  });
+  const { store } = useStore();
 
   return (
     <>
       <UserController
+        events={store.app.events}
         render={(direction) => {
           return (
             <Overworld
               direction={direction}
-              events={state.events}
             />
           );
         }}/>

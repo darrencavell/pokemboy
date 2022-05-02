@@ -4,7 +4,7 @@ import KeyboardController from './KeyboardController';
 import PadController from './PadController';
 
 const UserController = props => {
-  const { render } = props;
+  const { events, render } = props;
 
   const [arrows, setArrows] = useState([]);
 
@@ -28,6 +28,7 @@ const UserController = props => {
         onReleased={handleReleased}
       />
       <PadController
+        events={events}
         arrows={arrows}
         setArrows={setArrows}
         onPressed={handlePressed}
