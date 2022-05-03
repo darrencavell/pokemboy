@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import KeyboardController from './KeyboardController';
 import PadController from './PadController';
 
-const UserController = props => {
-  const { events, render } = props;
+import { useStore } from '../../lib/context';
+import { DIRECTIONS } from '../../lib/constant';
 
-  const [arrows, setArrows] = useState([]);
+const UserController = props => {
+  const { events } = props;
+
+  const { store, dispatch } = useStore();
 
   const handlePressed = (arrow, queue) => {
     if (queue.indexOf(arrow) !== -1) {
@@ -19,22 +22,25 @@ const UserController = props => {
     return queue.filter(currentArrow => currentArrow !== arrow);
   }
 
+  const handleSetDirections = directions => {
+    dispatch({ type: DIRECTIONS, payload: directions });
+  }
+
   return (
     <>
       <KeyboardController
-        arrows={arrows}
-        setArrows={setArrows}
+        arrows={store.app.directions}
+        setArrows={handleSetDirections}
         onPressed={handlePressed}
         onReleased={handleReleased}
       />
       <PadController
         events={events}
-        arrows={arrows}
-        setArrows={setArrows}
+        arrows={store.app.directions}
+        setArrows={handleSetDirections}
         onPressed={handlePressed}
         onReleased={handleReleased}
       />
-      {render(arrows)}
     </>
   )
 }

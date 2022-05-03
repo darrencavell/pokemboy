@@ -36,7 +36,7 @@ const Form = props => {
           <BoxList padding="12px 16px 12px">
             <h2>Congratulations</h2>
             <p>You got yourself a new Pokemon, what name would you like to give?</p>
-            <TextInput onInput={onInput} />
+            <TextInput onInput={onInput} height="36px" />
             <p
               css={css`
                 color: #ff4d4f;

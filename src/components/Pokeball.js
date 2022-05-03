@@ -27,7 +27,7 @@ const Pokeball = props => {
       css={css`
         position: absolute;
         z-index: 1;
-        bottom: 20px;
+        bottom: 40px;
         left: 50%;
         width: 64px;
         ${isAnimating && css`

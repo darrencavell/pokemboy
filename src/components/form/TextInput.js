@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import Box from '../box/Box';
 
 const TextInput = props => {
-  const { ...rest } = props;
+  const { height, ...rest } = props;
   return (
     <Box>
       <div css={css`
@@ -15,6 +15,7 @@ const TextInput = props => {
           css={css`
             position: relative;
             background: #ffffff;
+            height: ${height || 'initial'};
             z-index: 1;
             border: 0;
             outline: 0;

@@ -9,19 +9,13 @@ import Box from '../box/Box';
 import BoxList from '../box/BoxList';
 
 const TextMessage = props => {
-  const { content } = props;
+  const { content, onClose } = props;
 
   const breakpoints = [0, 768];
   const mediaQueries = breakpoints.map(breakpoint => `@media (min-width: ${breakpoint}px)`);
   const blink = keyframes`
     to { visibility: hidden; }
   `;
-
-  const { dispatch } = useStore();
-
-  const handleClose = () => {
-    dispatch({ type: TEXT_MESSAGE, payload: '' });
-  }
 
   return (
     <div
@@ -30,16 +24,16 @@ const TextMessage = props => {
         ${mediaQueries[0]} {
           left: 50px;
           right: 50px;
-          top: 24px;
+          bottom: 48px;
         }
         ${mediaQueries[1]} {
           left: 80px;
           right: 80px;
-          top: 60px;
+          bottom: 80px;
         }
         max-width: 750px;
       `}
-      onClick={handleClose}
+      onClick={onClose}
     >
       <Box>
         <div css={css`

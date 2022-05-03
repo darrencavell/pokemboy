@@ -8,13 +8,14 @@ import Pokemon from './Pokemon';
 import Menu from './Menu';
 import Form from './Form';
 import { useStore } from '../lib/context';
-import { EVENTS, GAME_TYPE, OVERWORLD } from '../lib/constant';
+import { EVENTS, FADE, GAME_TYPE, OVERWORLD } from '../lib/constant';
 
 const Battle = props => {
   const descriptionRef = useRef();
+  const timeoutRef = useRef();
 
   const [selectedMenu, setSelectedMenu] = useState(0);
-  const [isAnimating, setIsAnimatinf] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isPokemonCaught, setIsPokemonCaught] = useState(false);
   const [form, setForm] = useState({
     username: '',
@@ -47,15 +48,16 @@ const Battle = props => {
   const handleClick = (payload) => {
     switch (payload.id) {
       case 'catch':
-        setIsAnimatinf(true);
-        setTimeout(() => {
+        setIsAnimating(true);
+        timeoutRef.current = setTimeout(() => {
           const isWildPokemonCaught = catchWildPokemon();
-          console.log('isWildPokemonCaught', isWildPokemonCaught);
           if (isWildPokemonCaught) {
             setIsPokemonCaught(isWildPokemonCaught);
           } else {
-            setIsAnimatinf(false);
+            setIsAnimating(false);
           }
+
+          clearTimeout(timeoutRef.current);
         }, 1000);
         break;
     }
@@ -66,12 +68,13 @@ const Battle = props => {
   }
 
   const handleNavigateToOverworld = () => {
-    const existingEvents = store.app.events;
-    existingEvents.push({
-      type: GAME_TYPE,
-      payload: OVERWORLD
+    const currentEvents = [...store.app.events];
+    currentEvents.push({ type: GAME_TYPE, payload: OVERWORLD });
+    currentEvents.push({ type: FADE, payload: 'toBlack' });
+    dispatch({
+      type: EVENTS,
+      payload: currentEvents
     });
-    dispatch({ type: EVENTS, events: existingEvents });
   }
   
   const handleAddPokemonToTeam = () => {
@@ -81,10 +84,8 @@ const Battle = props => {
     }
     handleNavigateToOverworld();
   }
-  console.log('form', form);
 
   const handleReleasePokemonToWild = () => {
-    console.log('click button cancel');
     handleNavigateToOverworld();
   }
 
@@ -96,20 +97,8 @@ const Battle = props => {
 
   return (
     <>
-      <img
-        src="/assets/catch-background.jpg"
-        css={css`
-          object-position: top;
-          width: 100%;
-          height: 100%;
-        `}
-      />
-      <Pokemon
-        isAnimating={isAnimating}
-        />
-      <Pokeball
-        isAnimating={isAnimating}
-      />
+      <Pokemon isAnimating={isAnimating} />
+      <Pokeball isAnimating={isAnimating} />
       <div css={css`
         position: absolute;
         top: 0;

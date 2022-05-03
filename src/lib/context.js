@@ -5,9 +5,23 @@ import storeReducers from './store/reducers';
 const GameEngineContext = createContext({
   store: {
     app: {
+      main: {
+        x: 5,
+        y: 7,
+        movingProgress: 0,
+        behaviour: {
+          type: '',
+          direction: ''
+        },
+        currentBehaviour: null,
+        isEncounteringWildPokemon: false
+      },
       gameType: 'overworld',
       textMessage: null,
-      events: []
+      events: [],
+      directions: [],
+      walls: [],
+      fader: '',
     }
   },
   dispatch: () => {}

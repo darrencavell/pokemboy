@@ -17,7 +17,7 @@ const Menu = forwardRef((props, ref) => {
         ${mediaQueries[0]} {
           left: 50px;
           right: 50px;
-          bottom: 24px;
+          bottom: 48px;
         }
         ${mediaQueries[1]} {
           left: 80px;

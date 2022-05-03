@@ -5,12 +5,14 @@ import { css } from '@emotion/react';
 
 const MoveableMap = props => {
   const {
-    gameObject,
+    overridenCss,
+    main,
+    direction,
     scale,
+    sizes,
     src,
   } = props;
-
-  const direction = gameObject?.currentBehaviour?.direction || '';
+  
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -22,17 +24,13 @@ const MoveableMap = props => {
       context.drawImage(image, 0, 0);
     }
     image.src = src;
-  }, []);
+  }, [src]);
 
   const getTransform = () => {
-    const screen = {
-      width: window.innerWidth,
-      height: window.innerHeight
-    };
     const nudge = getNudge();
 
-    let x = -gameObject.x * 16 * scale / 2 + nudge.x;
-    let y = -gameObject.y * 16 * scale / 2 + nudge.y;
+    let x = -main.x * 16 * scale / 2 + nudge.x;
+    let y = -main.y * 16 * scale / 2 + nudge.y;
 
     return `translate(${x}px, ${y}px)`;
   }
@@ -41,28 +39,35 @@ const MoveableMap = props => {
     let x = 0, y = 0;
     switch (direction) {
       case 'UP':
-        return { x, y: gameObject.movingProgress / 16 * 16 * scale / 2 };
+        return { x, y: main.movingProgress / 16 * 16 * scale / 2 };
       case 'DOWN':
-        return { x, y: -gameObject.movingProgress / 16 * 16 * scale / 2 };
+        return { x, y: -main.movingProgress / 16 * 16 * scale / 2 };
       case 'LEFT':
-        return { x: gameObject.movingProgress / 16 * 16 * scale / 2, y };
+        return { x: main.movingProgress / 16 * 16 * scale / 2, y };
       case 'RIGHT':
-        return { x: -gameObject.movingProgress / 16 * 16 * scale / 2, y };
+        return { x: -main.movingProgress / 16 * 16 * scale / 2, y };
       default:
         return { x, y };
     }
   }
 
+  const baseCss = css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: ${getTransform()}
+  `
+
   return (
-    <div css={css`
-      position: absolute;
-      top: 0;
-      left: 0;
-      transform: ${getTransform()}
-    `}>
+    <div
+      css={css`
+        ${baseCss}
+        ${overridenCss}
+      `}
+    >
       <canvas
-        width={320}
-        height={320}
+        width={sizes.width}
+        height={sizes.height}
         css={css`
           transform-origin: left top;
           transform: scale(${scale});
