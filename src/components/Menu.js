@@ -2,8 +2,8 @@
 import { forwardRef } from 'react';
 import { css } from '@emotion/react';
 
-import Box from './box/Box';
-import BoxList from './box/BoxList';
+import Box from './Box/Box';
+import BoxList from './Box/BoxList';
 
 import { mediaQueries } from '../lib/utils';
 

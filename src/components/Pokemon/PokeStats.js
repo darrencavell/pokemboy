@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
+import { memo } from 'react';
 import { css } from '@emotion/react';
 
-const PokeStat = props => {
-  const { stats } = props;
+const PokeStats = props => {
+  const { pokemonName, stats } = props;
 
   if (stats) {
     return (
@@ -13,12 +14,11 @@ const PokeStat = props => {
           padding: 12px 0;
           font-weight: bold;
         `}>STATS</div>
-        {stats.map((currentStat, index) => {
-          console.log('stat', currentStat);
+        {stats.map(currentStat => {
           return (
             <div css={css`
               border-bottom: 1px solid #d6d6d6;
-            `} key={`${currentStat.stat.name}-${index}`}>{currentStat.stat.name}: {currentStat.base_stat}</div>
+            `} key={`${pokemonName}-${currentStat.stat.name}`}>{currentStat.stat.name}: {currentStat.base_stat}</div>
           );
         })}
       </>
@@ -28,4 +28,9 @@ const PokeStat = props => {
   return null;
 }
 
-export default PokeStat;
+export default memo(
+  PokeStats,
+  (prevProps, nextProps) => {
+    JSON.stringify(prevProps.stats) === JSON.stringify(nextProps.stats)
+  }
+);

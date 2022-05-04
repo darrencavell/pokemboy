@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { usePrevious } from '../hooks/usePrevious';
+
+import { usePrevious } from '../../lib/hooks/usePrevious';
 
 const FadeWhite = props => {
   const { content, onTransitionEnd } = props;

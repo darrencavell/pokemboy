@@ -1,4 +1,4 @@
-import TextMessage from './event/TextMessage';
+import TextMessage from './TextMessage';
 
 const Message = props => {
   const { content, onClose } = props;

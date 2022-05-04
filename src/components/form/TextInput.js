@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import Box from '../box/Box';
+
+import Box from '../Box/Box';
 
 const TextInput = props => {
   const { height, ...rest } = props;

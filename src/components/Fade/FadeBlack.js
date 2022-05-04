@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { usePrevious } from '../hooks/usePrevious';
+
+import { usePrevious } from '../../lib/hooks/usePrevious';
 
 const FadeBlack = props => {
   const { content, onTransitionEnd } = props;

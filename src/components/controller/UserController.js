@@ -38,6 +38,7 @@ const UserController = props => {
         events={events}
         arrows={store.app.directions}
         setArrows={handleSetDirections}
+        size={6}
         onPressed={handlePressed}
         onReleased={handleReleased}
       />

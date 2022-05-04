@@ -33,7 +33,6 @@ export const getMapByGameType = gameType => {
         src: '/assets/mypokemon.jpeg'
       }
     case OVERWORLD:
-    default:
       return {
         sizes: {
           width: 320,
@@ -42,7 +41,16 @@ export const getMapByGameType = gameType => {
         scale: 4,
         src: '/assets/lavaridge.png'
       }
-  }
+    default:
+      return {
+        sizes: {
+          width: 320,
+          height: 320,
+        },
+        scale: 1,
+        src: ''
+      }
+    }
 }
 
 export const getWildPokemon = (length) => {

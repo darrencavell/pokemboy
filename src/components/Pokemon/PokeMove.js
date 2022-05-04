@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
+import { memo } from 'react';
 import { css } from '@emotion/react';
 
 const PokeMove = props => {
-  const { moves } = props;
+  const { pokemonName, moves } = props;
 
   if (moves) {
     return (
@@ -14,12 +15,11 @@ const PokeMove = props => {
           font-weight: bold;
         `}>Moves</div>
         <div>
-          {moves.map((currentMove, index) => {
-            console.log('currentMove', currentMove);
+          {moves.map(currentMove => {
             return (
               <div css={css`
                 border-bottom: 1px solid #d6d6d6;
-              `} key={`${currentMove.move.name}-${index}`}>{currentMove.move.name}</div>
+              `} key={`${pokemonName}-${currentMove.move.name}`}>{currentMove.move.name}</div>
             );
           })}
         </div>
@@ -30,4 +30,9 @@ const PokeMove = props => {
   return null;
 }
 
-export default PokeMove;
+export default memo(
+  PokeMove,
+  (prevProps, nextProps) => {
+    JSON.stringify(prevProps.moves) === JSON.stringify(nextProps.moves)
+  }
+);

@@ -1,15 +1,33 @@
 /** @jsxImportSource @emotion/react */
 
 import { useEffect, useRef } from 'react';
-import { css } from '@emotion/react';
-
-import './style.css';
+import { css, keyframes } from '@emotion/react';
 
 const AnimatedPerson = props => {
   const { gameObject, scale, src } = props;
 
   const direction = gameObject?.currentBehaviour?.direction || '';
   const canvasRef = useRef();
+
+  const characterWalkUp = keyframes`
+    0% { transform: translate(0, -75%); }
+    100% { transform: translate(-100%, -75%); }
+  `;
+
+  const characterWalkDown = keyframes`
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+  `;
+
+  const characterWalkLeft = keyframes`
+    0% { transform: translate(0, -25%); }
+    100% { transform: translate(-100%, -25%); }
+  `;
+
+  const characterWalkRight = keyframes`
+    0% { transform: translate(0, -50%); }
+    100% { transform: translate(-100%, -50%); }
+  `;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,15 +60,15 @@ const AnimatedPerson = props => {
   const getAnimation = () => {
     switch (direction) {
       case 'UP':
-        return 'characterWalkUp 0.5s steps(4) infinite';
+        return css`${characterWalkUp} 0.5s steps(4) infinite`;
       case 'DOWN':
-        return 'characterWalkDown 0.5s steps(4) infinite';
+        return css`${characterWalkDown} 0.5s steps(4) infinite`;
       case 'LEFT':
-        return 'characterWalkLeft 0.5s steps(4) infinite';
+        return css`${characterWalkLeft} 0.5s steps(4) infinite`;
       case 'RIGHT':
-        return 'characterWalkRight 0.5s steps(4) infinite';
+        return css`${characterWalkRight} 0.5s steps(4) infinite`;
       default:
-        return '';
+        return css``;
     }
   }
 
@@ -70,12 +88,16 @@ const AnimatedPerson = props => {
     }
   }
 
+  const getTransform = () => {
+    return `translate(${gameObject.x * 32 * scale + getNudge().x}px, ${gameObject.y * 32 * scale + getNudge().y - 6}px)`;
+  }
+
   return (
     <div css={css`
       position: absolute;
       top: 0;
       left: 0;
-      transform: translate(${gameObject.x * 32 * scale + getNudge().x}px, ${gameObject.y * 32 * scale + getNudge().y - 6}px)
+      transform: ${getTransform()};
     `}>
       <div css={css`
         width: 64px;
@@ -91,7 +113,7 @@ const AnimatedPerson = props => {
             width: 256px;
             height: 256px;
             transform: ${getSpritesheet(direction)};
-            animation: ${getAnimation(direction)}
+            animation: ${getAnimation(direction)};
           `}
         />
       </div>

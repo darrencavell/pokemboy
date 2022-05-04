@@ -1,8 +1,8 @@
-import AnimatedPerson from './canvas/AnimatedPerson';
+import AnimatedPerson from '../components/Canvas/AnimatedPerson';
 
 import { useStore } from '../lib/context';
-import UserController from './controller/UserController';
-import Navigation from './Navigation';
+import UserController from '../components/Controller/UserController';
+import Navigation from '../components/Navigation';
 
 const Overworld = props => {
   const { store } = useStore();

@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { css } from '@emotion/react';
 
-import Close from './Close';
+import Close from '../components/Close';
 
 import { useStore } from '../lib/context';
 import { EVENTS, FADE, GAME_TYPE, OVERWORLD } from '../lib/constant';
@@ -26,13 +26,13 @@ const MyPokemon = props => {
   const renderPokemon = useMemo(() => {
     const result = [];
     if (data.length === 0) return 'Current you have not caught any pokemon';
-    data.map((pokemon, index) => {
+    data.map((pokemon) => {
       result.push(
         <div
           css={css`
             text-align: center;
           `}
-          key={`${pokemon.username}-${pokemon.name}-${index}`}
+          key={`${pokemon.name}-${pokemon.username}`}
         >
           <img src={pokemon.image} />
           <div css={css`
@@ -63,6 +63,7 @@ const MyPokemon = props => {
       <Close
         overridenCss={css`
           position: fixed;
+          z-index: 1;
         `}
         onClose={handleClose}
       />

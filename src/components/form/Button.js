@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from '@emotion/react';
-import Box from '../box/Box';
+
+import Box from '../Box/Box';
 
 const Button = props => {
   const { children, color, height, type, ...rest } = props;

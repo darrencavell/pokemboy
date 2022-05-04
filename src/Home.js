@@ -6,22 +6,34 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useQuery, useLazyQuery } from '@apollo/client';
 
-import { useStore } from './lib/context';
-import GameEngine from './components/GameEngine';
 import Background from './components/Background';
-import Battle from './components/Battle';
-import Message from './components/Message';
-import { ENCOUNTER_POKEMON, EVENTS, FADE, GAME_TYPE, GRAPHQL, MAIN, MYPOKEMON, OVERWORLD, POKEDEX, TEXT_MESSAGE } from './lib/constant';
-import Overworld from './components/Overworld';
-import Pokedex from './components/Pokedex';
-import { handleEvent } from './components/event/event';
-import MoveableMap from './components/canvas/MoveableMap';
+import Message from './components/Message/Message';
+import MoveableMap from './components/Canvas/MoveableMap';
 import Person from './components/Person';
-import Fade from './components/Fade';
+import Fade from './components/Fade/Fade';
+
+import { useStore } from './lib/context';
 import { getMapByGameType } from './lib/utils';
 import { GET_POKEMONS, GET_POKEMON_DETAIL } from './lib/graphql/queries';
+import {
+  DIRECTIONS,
+  ENCOUNTER_POKEMON,
+  EVENTS,
+  FADE,
+  GAME_TYPE,
+  GRAPHQL,
+  MAIN,
+  MYPOKEMON,
+  OVERWORLD,
+  POKEDEX,
+  TEXT_MESSAGE
+} from './lib/constant';
 import localStorage from './lib/localStorage';
-import MyPokemon from './components/MyPokemon';
+
+import Battle from './views/Battle';
+import Overworld from './views/Overworld';
+import Pokedex from './views/Pokedex';
+import MyPokemon from './views/MyPokemon';
 
 const Home = () => {
   const { store, dispatch } = useStore();
@@ -29,36 +41,19 @@ const Home = () => {
   const { loading: loadingGetPokemons, data: dataGetPokemons, fetchMore: fetchMoreGetPokemons } = useQuery(GET_POKEMONS, {
     variables: {
       limit: store.app.graphql.pokemons.limit,
-      offset: store.app.graphql.pokemons.offset,
-    },
+      offset: 0,
+    }
   });
 
   const [getPokemonDetail, { loading: loadingGetPokemonDetail, data: dataGetPokemonDetail }] = useLazyQuery(GET_POKEMON_DETAIL)
 
   const handleRefetch = () => {
-    const newOffset = store.app.graphql.pokemons.offset + 10;
-    
-    const payload = {
-      ...store.app.graphql,
-      pokemons: {
-        ...store.app.graphql.pokemons,
-        offset: newOffset,
-      }
-    };
-
     fetchMoreGetPokemons({
-      limit: store.app.graphql.pokemons.limit,
-      offset: newOffset,
-    });
-
-    dispatch({
-      type: GRAPHQL,
-      payload
+      variables: {
+        offset: dataGetPokemons.pokemons.results.length,
+      }
     });
   }
-
-  // if (loadingGetPokemons) return 'Loading...';
-  // if (error) return `Error! ${error.message}`;
 
   const [id, setId] = useState(0);
   const requestRef = useRef();
@@ -75,7 +70,7 @@ const Home = () => {
         isTriggeringCanvas: false,
         behaviour: {
           type: 'walk',
-          direction: store.app.directions[0]
+          direction: store.app.main.isEncounteringWildPokemon ? null : store.app.directions[0]
         }
       },
       store.app.walls,
@@ -143,8 +138,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (store.app.directions) {
-      if (store.app.events.length === 0) {
+    if (store.app.events.length === 0) {
+      if (!store.app.main.isEncounteringWildPokemon) {
         requestRef.current = requestAnimationFrame(getCharacterBehaviour);
       }
     }
@@ -166,10 +161,20 @@ const Home = () => {
           payload: {
             ...store.app.main,
             x: store.app.main.x,
-            y: store.app.main.y
+            y: store.app.main.y,
+            isTriggeringCanvas: false,
+            isEncounteringWildPokemon: false,
+            movingProgress: 0,
+            currentBehaviour: null,
+            behaviour: {
+              type: '',
+              direction: ''
+            }
           }
         });
-        
+
+        dispatch({ type: DIRECTIONS, payload: [] });
+
         const currentEvents = [...store.app.events];
         currentEvents.push({ type: FADE, payload: 'toWhite' });
         currentEvents.push({ type: GAME_TYPE, payload: ENCOUNTER_POKEMON });
@@ -187,21 +192,16 @@ const Home = () => {
 
   useEffect(() => {
     if (dataGetPokemons) {
-      const currentData = dataGetPokemons?.pokemons?.results;
-      
-      const existingData = [
-        ...store.app.graphql.pokemons.data,
-        ...currentData
-      ];
-  
+      const newData = dataGetPokemons?.pokemons?.results;
+
       const payload = {
         ...store.app.graphql,
         pokemons: {
           ...store.app.graphql.pokemons,
-          data: existingData
+          data: newData
         }
       }
-  
+
       dispatch({
         type: GRAPHQL,
         payload
@@ -228,7 +228,16 @@ const Home = () => {
   return (
     <>
       <Background />
-      <GameEngine>
+      <div css={css`
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 750px;
+        height: 100vh;
+        position: relative;
+      `}>
         <div css={css`
           position: absolute;
           overflow: hidden;
@@ -268,7 +277,7 @@ const Home = () => {
         )}
         {store.app.gameType === POKEDEX && (
           <Pokedex
-            data={dataGetPokemons?.pokemons?.results || []}
+            data={dataGetPokemons?.pokemons || {}}
             loading={loadingGetPokemons}
             onFetchMore={handleRefetch}
           />
@@ -286,7 +295,7 @@ const Home = () => {
           content={store.app.fader}
           onTransitionEnd={handleFaderTransitionEnd}
         />
-      </GameEngine>
+      </div>
     </>
   )
 }

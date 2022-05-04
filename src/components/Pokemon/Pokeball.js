@@ -4,7 +4,7 @@ import { css, keyframes } from '@emotion/react';
 
 const Pokeball = props => {
   const { isAnimating } = props;
-  
+
   const throwBall = keyframes`
     0% { transform: translate(-236px, -124px) rotate(8deg); }
     5% { transform: translate(-193px, -252px) rotate(14deg); }
@@ -26,12 +26,14 @@ const Pokeball = props => {
     <img
       css={css`
         position: absolute;
+        left: 48%;
+        bottom: 10%;
         z-index: 1;
-        bottom: 40px;
-        left: 50%;
         width: 64px;
+        opacity: 0;
         ${isAnimating && css`
           animation: 1.5s forwards ${throwBall};
+          opacity: 1;
         `}
       `}
       src="/assets/pokeball.png"

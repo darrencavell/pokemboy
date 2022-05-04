@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import Box from './box/Box';
-import BoxList from './box/BoxList';
-import TextInput from './form/TextInput';
-import Button from './form/Button';
+import Box from '../Box/Box';
+import BoxList from '../Box/BoxList';
+import TextInput from '../Form/TextInput';
+import Button from '../Form/Button';
 
-import { mediaQueries } from '../lib/utils';
+import { mediaQueries } from '../../lib/utils';
 
 const Form = props => {
   const { form, onInput, onOk, onCancel } = props;

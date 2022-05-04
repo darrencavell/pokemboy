@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
+import { memo } from 'react';
 import { css } from '@emotion/react';
 
 const PokeType = props => {
-  const { types } = props;
+  const { pokemonName, types } = props;
 
   if (types) {
     return (
@@ -14,12 +15,11 @@ const PokeType = props => {
           font-weight: bold;
         `}>Moves</div>
         <div>
-          {types.map((currentType, index) => {
-            console.log('currentType', currentType);
+          {types.map(currentType => {
             return (
               <div css={css`
                 border-bottom: 1px solid #d6d6d6;
-              `} key={`${currentType.type.name}-${index}`}>{currentType.type.name}</div>
+              `} key={`${pokemonName}-${currentType.type.name}`}>{currentType.type.name}</div>
             );
           })}
         </div>
@@ -30,4 +30,9 @@ const PokeType = props => {
   return null;
 }
 
-export default PokeType;
+export default memo(
+  PokeType,
+  (prevProps, nextProps) => {
+    JSON.stringify(prevProps.types) === JSON.stringify(nextProps.types)
+  }
+);

@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 
-import Box from './box/Box';
+import Box from './Box/Box';
 
 const Icon = props => {
   const { onClick, src } = props;

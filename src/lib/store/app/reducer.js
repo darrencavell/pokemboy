@@ -24,9 +24,10 @@ export const initialState = {
       wildPokemonIndex: null,
       myPokemons: []
     },
-    gameType: OVERWORLD,
+    gameType: '',
     textMessage: null,
     events: [
+      { type: GAME_TYPE, payload: OVERWORLD },
       { type: TEXT_MESSAGE, payload: 'Welcome to Pokemboy! I am glad you are here.' },
       { type: TEXT_MESSAGE, payload: 'Here\' a little simulator to experience the journey of playing pokemon in my childhood!' },
       { type: TEXT_MESSAGE, payload: 'Hope you enjoy!' }
@@ -113,7 +114,6 @@ export const initialState = {
     graphql: {
       pokemons: {
         limit: 10,
-        offset: 0,
         data: []
       },
       pokemonDetail: {

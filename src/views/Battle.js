@@ -1,24 +1,42 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import Pokeball from './Pokeball';
-import Pokemon from './Pokemon';
-import Menu from './Menu';
-import Form from './Form';
+import Pokeball from '../components/Pokemon/Pokeball';
+import Pokemon from '../components/Pokemon/Pokemon';
+import PokeStats from '../components/Pokemon/PokeStats';
+import PokeMove from '../components/Pokemon/PokeMove';
+import Menu from '../components/Menu';
+import Form from '../components/Battle/Form';
+import Modal from '../components/Modal';
+import Icon from '../components/Icon';
+
 import { useStore } from '../lib/context';
-import { EVENTS, FADE, GAME_TYPE, MAIN, OVERWORLD } from '../lib/constant';
-import PokeStat from './PokeStat';
-import PokeMove from './PokeMove';
-import Modal from './Modal';
-import Icon from './Icon';
-import localStorage from '../lib/localStorage';
+import { EVENTS, FADE, GAME_TYPE, MAIN, OVERWORLD, TEXT_MESSAGE } from '../lib/constant';
 
 const Battle = props => {
   const { data, onFetch } = props;
 
-  const descriptionRef = useRef();
+  const menus = [
+    {
+      id: 'catch',
+      text: 'Catch Now',
+      description: 'Catch a Pokémon with your own Pokéball, gonna catch them all!'
+    },
+    {
+      id: 'pokemon-detail',
+      text: 'See Pokemon Detail',
+      description: 'Examine furthermore the Pokémon itself'
+    }
+  ];
+
+  const [description, setDescription] = useState(menus[0].description);
+  const descriptionRef = useCallback(node => {
+    if (node) {
+      node.innerText = description;
+    }
+  }, [description]);
   const timeoutRef = useRef();
 
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -36,22 +54,11 @@ const Battle = props => {
     image: ''
   };
 
-  const menus = [
-    {
-      id: 'catch',
-      text: 'Catch Now',
-      description: 'Catch a Pokémon with your own Pokéball, gonna catch them all!'
-    },
-    {
-      id: 'pokemon-detail',
-      text: 'See Pokemon Detail',
-      description: 'Examine furthermore the Pokémon itself'
-    }
-  ];
-
   const handleCursorEnterMenu = (payload, index) => {
-    setSelectedMenu(index);
-    descriptionRef.current.innerText = payload.description;
+    if (store.app.events.length === 0) {
+      setSelectedMenu(index);
+      setDescription(payload.description);
+    }
   }
 
   const catchWildPokemon = () => {
@@ -59,23 +66,32 @@ const Battle = props => {
   }
 
   const handleClickMenu = (payload) => {
-    switch (payload.id) {
-      case 'catch':
-        setIsAnimating(true);
-        timeoutRef.current = setTimeout(() => {
-          const isWildPokemonCaught = catchWildPokemon();
-          if (isWildPokemonCaught) {
-            setIsPokemonCaught(isWildPokemonCaught);
-          } else {
-            setIsAnimating(false);
-          }
-
-          clearTimeout(timeoutRef.current);
-        }, 1000);
-        break;
-      case 'pokemon-detail':
-        setPokemonDetail(true);
-        break;
+    if (store.app.events.length === 0) {
+      switch (payload.id) {
+        case 'catch':
+          setIsAnimating(true);
+          timeoutRef.current = setTimeout(() => {
+            const isWildPokemonCaught = catchWildPokemon();
+            if (isWildPokemonCaught) {
+              setIsPokemonCaught(isWildPokemonCaught);
+            } else {
+              setIsAnimating(false);
+  
+              const currentEvents = [...store.app.events];
+              currentEvents.push({ type: TEXT_MESSAGE, payload: 'Oops the Pokemon break free!' })
+              dispatch({
+                type: EVENTS,
+                payload: currentEvents
+              });
+            }
+  
+            clearTimeout(timeoutRef.current);
+          }, 1000);
+          break;
+        case 'pokemon-detail':
+          setPokemonDetail(true);
+          break;
+      }
     }
   }
 
@@ -124,12 +140,6 @@ const Battle = props => {
   }
 
   useEffect(() => {
-    if (descriptionRef.current) {
-      descriptionRef.current.innerText = menus[0].description;
-    }
-  }, [currentPokemon]);
-
-  useEffect(() => {
     onFetch({
       variables: {
         name: currentPokemon.name
@@ -174,8 +184,8 @@ const Battle = props => {
             text-transform: uppercase;
             font-weight: bold;
           `}>{currentPokemon.name}</div>
-          <PokeMove moves={data.moves} />
-          <PokeStat stats={data.stats} />
+          <PokeMove pokemonName={currentPokemon.name} moves={data.moves} />
+          <PokeStats pokemonName={currentPokemon.name} stats={data.stats} />
         </div>
       </Modal>
       <Pokeball isAnimating={isAnimating} />

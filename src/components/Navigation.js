@@ -2,11 +2,18 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
-import { useStore } from '../lib/context';
-import Box from './box/Box';
+
 import Menu from './Menu';
-import { EVENTS, FADE, GAME_TYPE, MYPOKEMON, POKEDEX } from '../lib/constant';
 import Icon from './Icon';
+
+import {
+  EVENTS,
+  FADE,
+  GAME_TYPE,
+  MYPOKEMON,
+  POKEDEX
+} from '../lib/constant';
+import { useStore } from '../lib/context';
 
 const Navigation = props => {
   const { store, dispatch } = useStore();

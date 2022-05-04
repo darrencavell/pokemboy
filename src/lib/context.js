@@ -18,7 +18,7 @@ const GameEngineContext = createContext({
         wildPokemonIndex: null,
         myPokemons: []
       },
-      gameType: 'overworld',
+      gameType: '',
       textMessage: null,
       events: [],
       directions: [],
@@ -27,7 +27,6 @@ const GameEngineContext = createContext({
       graphql: {
         pokemons: {
           limit: 10,
-          offset: 0,
           data: []
         },
         pokemonDetail: {
