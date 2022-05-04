@@ -10,7 +10,7 @@ const Background = props => {
       right: 0;
       bottom: 0;
       top: 0;
-      background: rgb(154, 195, 207);
+      background: #9ac3cf;
     `}></div>
   );
 }

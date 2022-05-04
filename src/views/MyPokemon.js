@@ -23,6 +23,8 @@ const MyPokemon = props => {
     isOpen: false,
     pokemon: null
   });
+  
+  console.log('state', state);
 
   const handleClose = () => {
     const currentEvents = [...store.app.events];
@@ -37,6 +39,7 @@ const MyPokemon = props => {
   const handleClickPokemonDetail = (payload) => {
     setState({
       ...state,
+      isOpen: true,
       pokemon: {
         ...state.pokemon,
         ...payload,
@@ -96,7 +99,12 @@ const MyPokemon = props => {
             `}
             onClick={() => handleClickPokemonDetail(pokemon)}
           >
-            <img src={pokemon.image} />
+            <img
+              src={pokemon.image}
+              width={96}
+              height={96}
+              alt="my-pokemon"
+            />
             <div
               css={css`
                 text-transform: uppercase;
@@ -126,7 +134,7 @@ const MyPokemon = props => {
     if (dataPokemonDetail && !loadingDataPokemonDetail) {
       setState({
         ...state,
-        isOpen: true,
+        isOpen: false,
         pokemon: {
           ...state.pokemon,
           ...dataPokemonDetail
@@ -145,6 +153,7 @@ const MyPokemon = props => {
           object-fit: cover;
         `}
         src="/assets/mypokemon.png"
+        alt="my-pokemon-background"
       />
       <div css={css`
         position: absolute;
@@ -202,7 +211,7 @@ const MyPokemon = props => {
           )}
         <PokemonDetail
           displayedPokemon={state.pokemon}
-          isOpen={state.isOpen}
+          isOpen={state.isOpen && !loadingDataPokemonDetail}
           ownedPokemon={store.app.main.myPokemons}
           onClose={handleClosePokemonDetail}
           onRelease={handleReleasePokemon}

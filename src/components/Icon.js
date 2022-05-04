@@ -28,6 +28,7 @@ const Icon = props => {
               width: 72px;
               height: 72px;
             `}
+            alt={`icon-${src}`}
             src={src}
             onClick={onClick}
           />

@@ -33,6 +33,7 @@ const Close = props => {
               height: 48px;
             `}
             src="/assets/earth.png"
+            alt="earth-icon"
             onClick={onClose}
           />
         </div>

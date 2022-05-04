@@ -167,6 +167,7 @@ const Battle = props => {
           width: 100vw;
         `}
         src="/assets/catch-background.jpg"
+        alt="catch-background"
       />
       <Pokemon
         isAnimating={isAnimating}

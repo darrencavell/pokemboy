@@ -30,6 +30,7 @@ const Pokeball = props => {
         bottom: 10%;
         z-index: 1;
         width: 64px;
+        height: 64px;
         opacity: 0;
         ${isAnimating && css`
           animation: 1.5s forwards ${throwBall};
@@ -37,6 +38,7 @@ const Pokeball = props => {
         `}
       `}
       src="/assets/pokeball.png"
+      alt="pokeball"
     />
   )
 }

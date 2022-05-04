@@ -104,7 +104,12 @@ const SplashScreen = props => {
             position: relative;
             z-index: 2;
           `}>
-            <img src="/assets/pokemboy.png" />
+            <img
+              src="/assets/pokemboy.png"
+              width={320}
+              height={320}
+              alt="pokemboy-splash-screen"
+            />
             <div css={css`
               display: flex;
               flex-direction: column;

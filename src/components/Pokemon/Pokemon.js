@@ -23,6 +23,7 @@ const Pokemon = props => {
           animation: 0.5s forwards 0.5s ${pokemonCatched};
         `}
       `}
+      alt={`pokemon-${src}`}
     />
   )
 }

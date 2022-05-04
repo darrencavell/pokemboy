@@ -123,6 +123,7 @@ const PokemonDetail = props => {
                   width: 100%;
                 `}
                 src={displayedPokemon.image}
+                alt={`pokemon-detail${displayedPokemon.image}`}
               />
               <PokeTypes pokemon={displayedPokemon} />
               <div css={css`

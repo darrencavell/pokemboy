@@ -52,6 +52,7 @@ const Pokedex = props => {
   const handleClickPokemon = (payload) => {
     setState({
       ...state,
+      isOpen: true,
       pokemon: {
         ...state.pokemon,
         ...payload,
@@ -97,7 +98,6 @@ const Pokedex = props => {
     if (dataPokemonDetail && !loadingDataPokemonDetail) {
       setState({
         ...state,
-        isOpen: true,
         pokemon: {
           ...state.pokemon,
           ...dataPokemonDetail
@@ -117,6 +117,7 @@ const Pokedex = props => {
           width: 100vw;
         `}
         src="/assets/pokedex.png"
+        alt="pokedex-background"
       />
       <div css={css`
         position: absolute;
@@ -141,7 +142,7 @@ const Pokedex = props => {
         </div>
         <PokemonDetail
           displayedPokemon={state.pokemon}
-          isOpen={state.isOpen}
+          isOpen={state.isOpen && !loadingDataPokemonDetail}
           ownedPokemon={store.app.main.myPokemons}
           onClose={handleClosePokemonDetail}
         />
