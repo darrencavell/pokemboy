@@ -12,9 +12,11 @@ import Home from './Home';
 
 import { GameEnginerProvider } from './lib/context';
 import { initialState } from './lib/store/app/reducer';
-import apolloClient from './graphql/apolloClient';
+import apolloClient from './lib/graphql/apolloClient';
+import localStorage from './lib/localStorage';
 
 const App = () => {
+  const state = JSON.parse(localStorage.get('pokemboy')) || initialState;
   return (
     <>
       <Global
@@ -27,7 +29,7 @@ const App = () => {
         `}
       />
       <ApolloProvider client={apolloClient}>
-        <GameEnginerProvider initialState={initialState}>
+        <GameEnginerProvider initialState={state}>
           <Router>
             <Routes>
               <Route exact path="/" element={<Home />} />

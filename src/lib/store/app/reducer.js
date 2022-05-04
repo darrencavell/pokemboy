@@ -1,9 +1,9 @@
 import {
   DIRECTIONS,
-  ENCOUNTER_POKEMON,
   EVENTS,
   FADE,
   GAME_TYPE,
+  GRAPHQL,
   MAIN,
   OVERWORLD,
   TEXT_MESSAGE
@@ -20,7 +20,9 @@ export const initialState = {
         direction: ''
       },
       currentBehaviour: null,
-      isEncounteringWildPokemon: false
+      isEncounteringWildPokemon: false,
+      wildPokemonIndex: null,
+      myPokemons: []
     },
     gameType: OVERWORLD,
     textMessage: null,
@@ -107,7 +109,18 @@ export const initialState = {
       '18x18': true,
       '19x6': true,
     },
-    fader: ''
+    fader: '',
+    graphql: {
+      pokemons: {
+        limit: 10,
+        offset: 0,
+        data: []
+      },
+      pokemonDetail: {
+        name: '',
+        data: {}
+      }
+    }
   }
 }
 
@@ -151,6 +164,13 @@ export const appReducer = (state, action) => {
     return {
       ...state.app,
       fader: action.payload
+    }
+  }
+
+  if (action.type === GRAPHQL) {
+    return {
+      ...state.app,
+      graphql: action.payload
     }
   }
 }

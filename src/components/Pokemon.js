@@ -3,21 +3,22 @@
 import { css, keyframes } from '@emotion/react';
 
 const Pokemon = props => {
-  const { isAnimating } = props;
+  const { isAnimating = false, overridenCss, src } = props;
 
   const pokemonCatched = keyframes`
     to { opacity: 0; }
   `;
 
+  const baseCss = css`
+    image-rendering: pixelated;
+  `;
+
   return (
     <img
-      src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+      src={src}
       css={css`
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(2);
-        image-rendering: pixelated;
+        ${baseCss}
+        ${overridenCss}
         ${isAnimating && css`
           animation: 0.5s forwards 0.5s ${pokemonCatched};
         `}

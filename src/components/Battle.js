@@ -8,9 +8,16 @@ import Pokemon from './Pokemon';
 import Menu from './Menu';
 import Form from './Form';
 import { useStore } from '../lib/context';
-import { EVENTS, FADE, GAME_TYPE, OVERWORLD } from '../lib/constant';
+import { EVENTS, FADE, GAME_TYPE, MAIN, OVERWORLD } from '../lib/constant';
+import PokeStat from './PokeStat';
+import PokeMove from './PokeMove';
+import Modal from './Modal';
+import Icon from './Icon';
+import localStorage from '../lib/localStorage';
 
 const Battle = props => {
+  const { data, onFetch } = props;
+
   const descriptionRef = useRef();
   const timeoutRef = useRef();
 
@@ -21,7 +28,13 @@ const Battle = props => {
     username: '',
     error: ''
   });
+  const [pokemonDetail, setPokemonDetail] = useState(false);
   const { store, dispatch } = useStore();
+
+  const currentPokemon = store.app.graphql.pokemons.data[store.app.main.wildPokemonIndex] || {
+    name: '',
+    image: ''
+  };
 
   const menus = [
     {
@@ -30,13 +43,13 @@ const Battle = props => {
       description: 'Catch a Pokémon with your own Pokéball, gonna catch them all!'
     },
     {
-      id: 'pokedex',
-      text: 'See My Pokédex',
-      description: 'Take a look on your captured Pokémon'
+      id: 'pokemon-detail',
+      text: 'See Pokemon Detail',
+      description: 'Examine furthermore the Pokémon itself'
     }
   ];
 
-  const handleCursorEnter = (payload, index) => {
+  const handleCursorEnterMenu = (payload, index) => {
     setSelectedMenu(index);
     descriptionRef.current.innerText = payload.description;
   }
@@ -45,7 +58,7 @@ const Battle = props => {
     return Math.round(Math.random());
   }
 
-  const handleClick = (payload) => {
+  const handleClickMenu = (payload) => {
     switch (payload.id) {
       case 'catch':
         setIsAnimating(true);
@@ -60,7 +73,14 @@ const Battle = props => {
           clearTimeout(timeoutRef.current);
         }, 1000);
         break;
+      case 'pokemon-detail':
+        setPokemonDetail(true);
+        break;
     }
+  }
+
+  const handleClosePokemonDetail = () => {
+    setPokemonDetail(false);
   }
 
   const handleSetPokemonUsername = (username) => {
@@ -82,6 +102,20 @@ const Battle = props => {
       setForm({ ...form, error: 'Please give your pokemon a username' });
       return;
     }
+
+    const myNewPokemon = store.app.main.myPokemons;
+    myNewPokemon.push({
+      ...currentPokemon,
+      ...data,
+      username: form.username
+    });
+    dispatch({
+      type: MAIN,
+      payload: {
+        ...store.app.main,
+        myPokemons: myNewPokemon
+      }
+    })
     handleNavigateToOverworld();
   }
 
@@ -93,48 +127,79 @@ const Battle = props => {
     if (descriptionRef.current) {
       descriptionRef.current.innerText = menus[0].description;
     }
+  }, [currentPokemon]);
+
+  useEffect(() => {
+    onFetch({
+      variables: {
+        name: currentPokemon.name
+      }
+    });
   }, []);
+
+  useEffect(() => {
+    console.log('data', data);
+  }, [data]);
+
+  if (!data) return null;
 
   return (
     <>
-      <Pokemon isAnimating={isAnimating} />
-      <Pokeball isAnimating={isAnimating} />
-      <div css={css`
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 3;
-        visibility: ${isPokemonCaught ? 'visible' : 'hidden'}
-      `}>
-        <div css={css`
+      <Pokemon
+        isAnimating={isAnimating}
+        src={currentPokemon.image}
+        overridenCss={css`
           position: absolute;
+          left: 50%;
+          bottom: 325px;
+          transform: translateX(-50%) scale(2);
+        `}
+      />
+      <Modal isVisible={pokemonDetail}>
+        <div css={css`
+          position: fixed;
           top: 0;
           left: 0;
-          right: 0;
           bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          opacity: ${isPokemonCaught ? '1' : '0'}
-          filter: blur(4px);
-        `}></div>
+          transition: tranform 0.5s ease;
+          background: #ffffff;
+          z-index: 5;
+          overflow-y: auto;
+          transform: ${pokemonDetail ? 'translate(0)' : 'translate(-100%)'} ;
+          width: 250px;
+        `}>
+        <Icon src="/assets/pc.png" onClick={handleClosePokemonDetail} />
+          <img src={currentPokemon.image} />
+          <div css={css`
+            text-transform: uppercase;
+            font-weight: bold;
+          `}>{currentPokemon.name}</div>
+          <PokeMove moves={data.moves} />
+          <PokeStat stats={data.stats} />
+        </div>
+      </Modal>
+      <Pokeball isAnimating={isAnimating} />
+      <Modal isVisible={isPokemonCaught}>
         <Form
           form={form}
           onInput={handleSetPokemonUsername}
           onOk={handleAddPokemonToTeam}
           onCancel={handleReleasePokemonToWild}
         />
-      </div>
+      </Modal>
       <Menu
+        descriptionOverridenCss={css`
+          bottom: 230px !important;
+        `}
         ref={descriptionRef}
-        onClick={handleClick}
-        onCursorEnter={handleCursorEnter}
+        onClick={handleClickMenu}
+        onCursorEnter={handleCursorEnterMenu}
         menus={menus}
         selectedMenu={selectedMenu}
         isAnimating={isAnimating}
       />
     </>
-  )
+  );
 }
 
 export default Battle;

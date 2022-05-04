@@ -1,3 +1,7 @@
+/** @jsxImportSource @emotion/react */
+
+import { css } from '@emotion/react';
+
 import './style.css';
 
 const PadController = props => {
@@ -13,7 +17,11 @@ const PadController = props => {
 
   return events.length === 0 && (
     <>
-      <div className="dpad">
+      <div className="dpad" css={css`
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+      `}>
         <div className="DemoDirectionUI flex-center">
           <button
             className="dpad-button dpad-left"

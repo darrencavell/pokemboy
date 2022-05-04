@@ -1,5 +1,7 @@
+import { getWildPokemon } from '../lib/utils';
+
 class Person {
-  constructor (parameters, walls) {
+  constructor (parameters, walls, pokemons) {
     this.parameters = parameters || {
       x: 0,
       y: 0,
@@ -12,10 +14,12 @@ class Person {
         direction: ''
       },
       movingProgress: 0,
-      isEncounteringWildPokemon: false
+      isEncounteringWildPokemon: false,
+      wildPokemonIndex: null
     };
 
     this.walls = walls;
+    this.pokemons = pokemons;
   }
 
   _updateCoordinates(direction) {
@@ -66,6 +70,8 @@ class Person {
       if (this._isBehaviourValid()) {
         if (this._isEncounteringWildPokemon()) {
           this.parameters.isEncounteringWildPokemon = true;
+          const wildPokemonIndex = getWildPokemon(this.pokemons.length);
+          this.parameters.wildPokemonIndex = wildPokemonIndex;
         }
         this.parameters.currentBehaviour = this.parameters.behaviour;
       }

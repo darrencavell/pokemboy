@@ -8,23 +8,49 @@ import BoxList from './box/BoxList';
 import { mediaQueries } from '../lib/utils';
 
 const Menu = forwardRef((props, ref) => {
-  const { isAnimating, menus, onCursorEnter, onClick, selectedMenu } = props;
+  const {
+    isAnimating,
+    menus,
+    onCursorEnter,
+    onClick,
+    selectedMenu,
+    descriptionOverridenCss,
+    menuOverridenCss
+  } = props;
+
+  const descriptionBaseCss = css`
+    position: absolute;
+    ${mediaQueries[0]} {
+      left: 50px;
+      right: 50px;
+      bottom: 48px;
+    }
+    ${mediaQueries[1]} {
+      left: 80px;
+      right: 80px;
+      bottom: 60px;
+    }
+    max-width: 750px;
+  `;
+
+  const menuBaseCss = css`
+    position: absolute;
+    ${mediaQueries[0]} {
+      left: 30px;
+      right: 30px;
+    }
+    ${mediaQueries[1]} {
+      left: 150px;
+      right: 150px;
+    }
+    bottom: 130px;
+  `;
 
   return (
     <>
       <div css={css`
-        position: absolute;
-        ${mediaQueries[0]} {
-          left: 50px;
-          right: 50px;
-          bottom: 48px;
-        }
-        ${mediaQueries[1]} {
-          left: 80px;
-          right: 80px;
-          bottom: 60px;
-        }
-        max-width: 750px;
+        ${descriptionBaseCss}
+        ${descriptionOverridenCss}
       `}>
         <Box>
           <div css={css`
@@ -38,17 +64,8 @@ const Menu = forwardRef((props, ref) => {
         </Box>
       </div>
       <div css={css`
-        position: absolute;
-        ${mediaQueries[0]} {
-          left: 30px;
-          right: 30px;
-        }
-        ${mediaQueries[1]} {
-          left: 150px;
-          right: 150px;
-        }
-        bottom: 130px;
-        
+        ${menuBaseCss}
+        ${menuOverridenCss}
       `}>
         <Box>
           <div css={css`

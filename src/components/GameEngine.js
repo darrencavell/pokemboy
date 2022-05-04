@@ -5,25 +5,18 @@ import { css } from '@emotion/react'
 const GameEngine = props => {
   const { children } = props;
 
-  const pixelSize = 16;
-  const innerScreenSize = (32 * pixelSize) * 7;
-
   return (
     <div css={css`
-      overflow: hidden;
       display: flex;
-      justifyContent: center;
-      alignItems: center;
-      max-width: 750px;
+      justify-content: center;
+      align-items: center;
       margin: 0 auto;
+      width: 100%;
+      max-width: 750px;
+      height: 100vh;
+      position: relative;
     `}>
-      <main css={css`
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-      `}>
-        {children}
-      </main>
+      {children}
     </div>
   )
 }
