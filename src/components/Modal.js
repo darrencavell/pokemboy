@@ -14,6 +14,7 @@ const Modal = props => {
       bottom: 0;
       z-index: 3;
       visibility: ${isVisible ? 'visible' : 'hidden'};
+      transition: visibility 0.5s ease;
     `}>
       <div css={css`
         position: absolute;
@@ -23,7 +24,7 @@ const Modal = props => {
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
         opacity: ${isVisible ? '1' : '0'};
-        transition: opacity: 0.5s ease;
+        transition: opacity 0.5s ease;
         filter: blur(4px);
       `}></div>
       {children}

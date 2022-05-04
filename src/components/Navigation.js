@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { css } from '@emotion/react';
 
 import Menu from './Menu';
@@ -11,32 +11,43 @@ import {
   FADE,
   GAME_TYPE,
   MYPOKEMON,
-  POKEDEX
+  POKEDEX,
+  TEXT_MESSAGE
 } from '../lib/constant';
 import { useStore } from '../lib/context';
+import localStorage from '../lib/localStorage';
 
 const Navigation = props => {
   const { store, dispatch } = useStore();
 
-  const descriptionRef = useRef();
-
   const [state, setState] = useState({
     selectedMenu: 0,
     isMenuOpen: false,
+    menus: [
+      {
+        id: 'pokedex',
+        text: 'Pokedex',
+        description: 'Observe and take a closer look to all the pokemons'
+      },
+      {
+        id: 'my-pokemon',
+        text: 'My Pokemon',
+        description: 'Preview your captured pokemon'
+      },
+      {
+        id: 'save',
+        text: 'Save',
+        description: 'Save your current progress so far!'
+      }
+    ]
   });
 
-  const menus = [
-    {
-      id: 'pokedex',
-      text: 'Pokedex',
-      description: 'Observe and take a closer look to all the pokemons'
-    },
-    {
-      id: 'my-pokemon',
-      text: 'My Pokemon',
-      description: 'Preview your captured pokemon'
+  const [description, setDescription] = useState(state.menus[0].description);
+  const descriptionRef = useCallback(node => {
+    if (node) {
+      node.innerText = description;
     }
-  ];
+  }, [description]);
 
   const handleClickNavigation = () => {
     setState({
@@ -65,6 +76,14 @@ const Navigation = props => {
           payload: currentEvents
         });
         break;
+      case 'save':
+        localStorage.add('pokemboy', JSON.stringify(store));
+        currentEvents.push({ type: TEXT_MESSAGE, payload: 'Current progress saved successfully!' });
+        dispatch({
+          type: EVENTS,
+          payload: currentEvents
+        });
+        break;
     }
   }
 
@@ -72,16 +91,9 @@ const Navigation = props => {
     setState({
       ...state,
       selectedMenu: index
-    })
-    descriptionRef.current.innerText = payload.description;
+    });
+    setDescription(payload.description);
   }
-
-  useEffect(() => {
-    if (descriptionRef.current) {
-      descriptionRef.current.innerText = menus[0].description;
-    }
-  }, [state.isMenuOpen]);
-
 
   return store.app.events.length === 0 && (
     <>
@@ -97,7 +109,7 @@ const Navigation = props => {
           `}
           descriptionOverridenCss={css`
             right: 16px !important;
-            top: 194px !important;
+            top: 229px !important;
             left: 16px !important;
             bottom: unset !important;
             z-index: 5;
@@ -105,7 +117,7 @@ const Navigation = props => {
           ref={descriptionRef}
           onClick={handleClickMenu}
           onCursorEnter={handleCursorEnterMenu}
-          menus={menus}
+          menus={state.menus}
           selectedMenu={state.selectedMenu}
           isAnimating={false}
         />

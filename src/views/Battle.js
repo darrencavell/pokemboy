@@ -5,12 +5,10 @@ import { css } from '@emotion/react';
 
 import Pokeball from '../components/Pokemon/Pokeball';
 import Pokemon from '../components/Pokemon/Pokemon';
-import PokeStats from '../components/Pokemon/PokeStats';
-import PokeMove from '../components/Pokemon/PokeMove';
 import Menu from '../components/Menu';
 import Form from '../components/Battle/Form';
 import Modal from '../components/Modal';
-import Icon from '../components/Icon';
+import PokemonDetail from '../components/Pokemon/PokemonDetail';
 
 import { useStore } from '../lib/context';
 import { EVENTS, FADE, GAME_TYPE, MAIN, OVERWORLD, TEXT_MESSAGE } from '../lib/constant';
@@ -49,10 +47,17 @@ const Battle = props => {
   const [pokemonDetail, setPokemonDetail] = useState(false);
   const { store, dispatch } = useStore();
 
-  const currentPokemon = store.app.graphql.pokemons.data[store.app.main.wildPokemonIndex] || {
+  const [currentPokemon, setPokemon] = useState(store.app.graphql.pokemons.data[store.app.main.wildPokemonIndex] || {
     name: '',
-    image: ''
-  };
+    image: '',
+  });
+
+  useEffect(() => {
+    setPokemon({
+      ...currentPokemon,
+      ...data
+    });
+  }, [data]);
 
   const handleCursorEnterMenu = (payload, index) => {
     if (store.app.events.length === 0) {
@@ -119,6 +124,11 @@ const Battle = props => {
       return;
     }
 
+    if (store.app.main.myPokemons.find(el => el.username === form.username)) {
+      setForm({ ...form, error: 'Username is already taken, please give your pokemon another username!' });
+      return;
+    }
+
     const myNewPokemon = store.app.main.myPokemons;
     myNewPokemon.push({
       ...currentPokemon,
@@ -147,14 +157,17 @@ const Battle = props => {
     });
   }, []);
 
-  useEffect(() => {
-    console.log('data', data);
-  }, [data]);
-
   if (!data) return null;
 
   return (
     <>
+      <img
+        css={css`
+          height: 100vh;
+          width: 100vw;
+        `}
+        src="/assets/catch-background.jpg"
+      />
       <Pokemon
         isAnimating={isAnimating}
         src={currentPokemon.image}
@@ -165,29 +178,12 @@ const Battle = props => {
           transform: translateX(-50%) scale(2);
         `}
       />
-      <Modal isVisible={pokemonDetail}>
-        <div css={css`
-          position: fixed;
-          top: 0;
-          left: 0;
-          bottom: 0;
-          transition: tranform 0.5s ease;
-          background: #ffffff;
-          z-index: 5;
-          overflow-y: auto;
-          transform: ${pokemonDetail ? 'translate(0)' : 'translate(-100%)'} ;
-          width: 250px;
-        `}>
-        <Icon src="/assets/pc.png" onClick={handleClosePokemonDetail} />
-          <img src={currentPokemon.image} />
-          <div css={css`
-            text-transform: uppercase;
-            font-weight: bold;
-          `}>{currentPokemon.name}</div>
-          <PokeMove pokemonName={currentPokemon.name} moves={data.moves} />
-          <PokeStats pokemonName={currentPokemon.name} stats={data.stats} />
-        </div>
-      </Modal>
+      <PokemonDetail
+        displayedPokemon={currentPokemon}
+        ownedPokemon={store.app.main.myPokemons}
+        isOpen={pokemonDetail}
+        onClose={handleClosePokemonDetail}
+      />
       <Pokeball isAnimating={isAnimating} />
       <Modal isVisible={isPokemonCaught}>
         <Form

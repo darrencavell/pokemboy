@@ -1,22 +1,27 @@
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { useStore } from '../lib/context';
-import { EVENTS, FADE, GAME_TYPE, OVERWORLD } from '../lib/constant';
-
 import Close from '../components/Close';
 import IndividualPokemon from '../components/Pokedex/IndividualPokemon';
+import PokemonDetail from '../components/Pokemon/PokemonDetail';
+
+import { useStore } from '../lib/context';
+import { EVENTS, FADE, GAME_TYPE, OVERWORLD } from '../lib/constant';
 import { usePrevious } from '../lib/hooks/usePrevious';
 
 const Pokedex = props => {
-  const { data, loading, onFetchMore } = props;
+  const { dataPokemon, dataPokemonDetail, loadingDataPokemon, loadingDataPokemonDetail, onFetchMore, onFetchDetail } = props;
 
-  const prevData = usePrevious(data);
+  const prevData = usePrevious(dataPokemon);
   const isFetched = useRef(false);
   const { store, dispatch } = useStore();
+  const [state, setState] = useState({
+    isOpen: false,
+    pokemon: null
+  });
 
   const handleScroll = (event) => {
     const scrollWidth = event.target.scrollWidth;
@@ -27,11 +32,9 @@ const Pokedex = props => {
 
     const ratio = scrollLeft / actualScreenWidth;
 
-    console.log('handleScroll', ratio, loading, !data?.next);
-    if (loading || !data?.next) return;
+    if (loadingDataPokemon || !dataPokemon?.next) return;
     if (ratio >= 0.99 && !isFetched.current) {
       isFetched.current = true;
-      console.log('masuk fetcgh more');
       onFetchMore();
     }
   }
@@ -46,43 +49,104 @@ const Pokedex = props => {
     });
   }
 
+  const handleClickPokemon = (payload) => {
+    setState({
+      ...state,
+      pokemon: {
+        ...state.pokemon,
+        ...payload,
+      }
+    });
+
+    onFetchDetail({
+      variables: {
+        name: payload.name
+      }
+    });
+  }
+
+  const handleClosePokemonDetail = () => {
+    setState({
+      ...state,
+      isOpen: false
+    });
+  }
+
   const renderPokemon = useMemo(() => {
     const result = [];
-    data?.results?.map(pokemon => {
-      result.push(<IndividualPokemon key={pokemon.name} pokemon={pokemon} />)
+    dataPokemon?.results?.map(pokemon => {
+      result.push(
+        <IndividualPokemon
+          key={pokemon.name}
+          pokemon={pokemon}
+          isOpen={state.isOpen}
+          onClick={() => handleClickPokemon(pokemon)}
+        />
+      );
     });
     return result;
-  }, [data.results]);
+  }, [dataPokemon.results, state.isOpen]);
 
   useEffect(() => {
-    if (prevData?.results?.length !== data?.results?.length) {
+    if (prevData?.results?.length !== dataPokemon?.results?.length) {
       isFetched.current = false;
     }
-  }, [data.results]);
+  }, [dataPokemon.results]);
+
+  useEffect(() => {
+    if (dataPokemonDetail && !loadingDataPokemonDetail) {
+      setState({
+        ...state,
+        isOpen: true,
+        pokemon: {
+          ...state.pokemon,
+          ...dataPokemonDetail
+        }
+      });
+    }
+  }, [dataPokemonDetail]);
 
   return (
-    <div css={css`
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-    `}>
-      <Close onClose={handleClose} />
-      <div
+    <>
+      <img
         css={css`
-          position: relative;
-          display: flex;
-          align-items: center;
-          flex-shrink: 0;
-          overflow-x: scroll;
+          background-position: bottom center;
+          image-rendering: pixelated;
+          object-fit: cover;
           height: 100vh;
+          width: 100vw;
         `}
-        onScroll={handleScroll}
-      >
-        {renderPokemon}
+        src="/assets/pokedex.png"
+      />
+      <div css={css`
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      `}>
+        <Close onClose={handleClose} />
+        <div
+          css={css`
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            flex-shrink: 0;
+            overflow-x: scroll;
+            height: 100vh;
+          `}
+          onScroll={handleScroll}
+        >
+          {renderPokemon}
+        </div>
+        <PokemonDetail
+          displayedPokemon={state.pokemon}
+          isOpen={state.isOpen}
+          ownedPokemon={store.app.main.myPokemons}
+          onClose={handleClosePokemonDetail}
+        />
       </div>
-    </div>
+    </>
   )
 }
 

@@ -8,12 +8,10 @@ import { useQuery, useLazyQuery } from '@apollo/client';
 
 import Background from './components/Background';
 import Message from './components/Message/Message';
-import MoveableMap from './components/Canvas/MoveableMap';
 import Person from './components/Person';
 import Fade from './components/Fade/Fade';
 
 import { useStore } from './lib/context';
-import { getMapByGameType } from './lib/utils';
 import { GET_POKEMONS, GET_POKEMON_DETAIL } from './lib/graphql/queries';
 import {
   DIRECTIONS,
@@ -26,18 +24,20 @@ import {
   MYPOKEMON,
   OVERWORLD,
   POKEDEX,
-  TEXT_MESSAGE
+  TEXT_MESSAGE,
+  SPLASH_SCREEN,
+  STATE
 } from './lib/constant';
-import localStorage from './lib/localStorage';
 
 import Battle from './views/Battle';
 import Overworld from './views/Overworld';
 import Pokedex from './views/Pokedex';
 import MyPokemon from './views/MyPokemon';
+import SplashScreen from './views/SplashScreen';
 
 const Home = () => {
   const { store, dispatch } = useStore();
-
+  
   const { loading: loadingGetPokemons, data: dataGetPokemons, fetchMore: fetchMoreGetPokemons } = useQuery(GET_POKEMONS, {
     variables: {
       limit: store.app.graphql.pokemons.limit,
@@ -60,8 +60,6 @@ const Home = () => {
 
   const FPS = 30;
   let previousTime = window.performance.now();
-
-  const map = getMapByGameType(store.app.gameType);
 
   const getCharacterBehaviour = () => {
     const main = new Person(
@@ -98,6 +96,8 @@ const Home = () => {
   const getCutsceneBehaviour = () => {
     const event = store.app.events[0];
 
+    const currentEvents = [...store.app.events];
+
     switch(event.type) {
       case TEXT_MESSAGE:
         dispatch({ type: TEXT_MESSAGE, payload: event.payload });
@@ -108,13 +108,16 @@ const Home = () => {
       case GAME_TYPE:
         dispatch({ type: GAME_TYPE, payload: event.payload });
         
-        const currentEvents = [...store.app.events];
         currentEvents.splice(0, 1);
-
-        localStorage.add('pokemboy', JSON.stringify(store));
 
         dispatch({ type: EVENTS, payload: currentEvents });
         break;
+      case STATE:
+        dispatch({ type: STATE, payload: event.payload });
+
+        currentEvents.splice(0, 1);
+
+        dispatch({ type: EVENTS, payload: currentEvents });
     }
   }
 
@@ -187,10 +190,6 @@ const Home = () => {
   }, [store.app.main]);
 
   useEffect(() => {
-    console.log(store);
-  }, [store]);
-
-  useEffect(() => {
     if (dataGetPokemons) {
       const newData = dataGetPokemons?.pokemons?.results;
 
@@ -238,35 +237,7 @@ const Home = () => {
         height: 100vh;
         position: relative;
       `}>
-        <div css={css`
-          position: absolute;
-          overflow: hidden;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        `}>
-          <MoveableMap
-            overridenCss={css`
-              ${store.app.gameType === ENCOUNTER_POKEMON && css`
-                transform: unset;
-              `}
-              ${store.app.gameType === POKEDEX && css`
-                transform: unset;
-                object-fit: contain;
-              `}
-              ${store.app.gameType === MYPOKEMON && css`
-                transform: unset;
-                object-fit: cover;
-              `}
-            `}
-            src={map.src}
-            direction={store.app.directions[0]}
-            main={store.app.main}
-            sizes={map.sizes}
-            scale={map.scale}
-          />
-        </div>
+        {store.app.gameType === SPLASH_SCREEN && <SplashScreen />}
         {store.app.gameType === OVERWORLD && <Overworld />}
         {store.app.gameType === ENCOUNTER_POKEMON && (
           <Battle
@@ -277,14 +248,20 @@ const Home = () => {
         )}
         {store.app.gameType === POKEDEX && (
           <Pokedex
-            data={dataGetPokemons?.pokemons || {}}
-            loading={loadingGetPokemons}
+            dataPokemon={dataGetPokemons?.pokemons || {}}
+            dataPokemonDetail={dataGetPokemonDetail?.pokemon}
+            loadingDataPokemon={loadingGetPokemons}
+            loadingDataPokemonDetail={loadingGetPokemonDetail}
             onFetchMore={handleRefetch}
+            onFetchDetail={getPokemonDetail}
           />
         )}
         {store.app.gameType === MYPOKEMON && (
           <MyPokemon
             data={store.app.main.myPokemons}
+            dataPokemonDetail={dataGetPokemonDetail?.pokemon}
+            loadingDataPokemonDetail={loadingGetPokemonDetail}
+            onFetchDetail={getPokemonDetail}
           />
         )}
         <Message

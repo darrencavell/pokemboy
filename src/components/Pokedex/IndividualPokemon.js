@@ -2,12 +2,13 @@
 
 import { css } from '@emotion/react';
 
-import { memo } from 'react';
-
 import Pokemon from '../Pokemon/Pokemon';
 
 const IndividualPokemon = props => {
-  const { pokemon } = props;
+  const {
+    pokemon,
+    onClick,
+  } = props;
 
   return (
     <div
@@ -20,9 +21,10 @@ const IndividualPokemon = props => {
         height: 300px;
 
         &:first-of-type {
-          margin-left: 30%;
+          margin-left: 20%;
         }
       `}
+      onClick={onClick}
     >
       <Pokemon
         overridenCss={css`
@@ -42,9 +44,4 @@ const IndividualPokemon = props => {
   )
 }
 
-export default memo(
-  IndividualPokemon,
-  (prevProps, nextProps) => {
-    prevProps.pokemon.name === nextProps.pokemon.name
-  }
-);
+export default IndividualPokemon;

@@ -5,7 +5,8 @@ import {
   GAME_TYPE,
   GRAPHQL,
   MAIN,
-  OVERWORLD,
+  SPLASH_SCREEN,
+  STATE,
   TEXT_MESSAGE
 } from '../../constant'
 
@@ -24,14 +25,9 @@ export const initialState = {
       wildPokemonIndex: null,
       myPokemons: []
     },
-    gameType: '',
+    gameType: SPLASH_SCREEN,
     textMessage: null,
-    events: [
-      { type: GAME_TYPE, payload: OVERWORLD },
-      { type: TEXT_MESSAGE, payload: 'Welcome to Pokemboy! I am glad you are here.' },
-      { type: TEXT_MESSAGE, payload: 'Here\' a little simulator to experience the journey of playing pokemon in my childhood!' },
-      { type: TEXT_MESSAGE, payload: 'Hope you enjoy!' }
-    ],
+    events: [],
     directions: [],
     walls: {
       '1x7': true,
@@ -125,6 +121,13 @@ export const initialState = {
 }
 
 export const appReducer = (state, action) => {
+  if (action.type === STATE) {
+    return {
+      ...state.app,
+      ...action.payload.app
+    }
+  }
+
   if (action.type === MAIN) {
     return {
       ...state.app,
