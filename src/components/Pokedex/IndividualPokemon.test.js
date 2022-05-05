@@ -7,7 +7,7 @@ const props = {
     src: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png'
   },
   onClick: () => jest.fn()
-}
+};
 
 describe('IndividualPokemon component tests', () => {
   it('should render correctly', () => {
