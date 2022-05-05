@@ -30,3 +30,5 @@ link: [live website](https://pokemboy.netlify.app/)
 3. CSS-in-JS Emotion
 4. Jest with React Testing Library
 5. PWA
+
+**NB:** for current development phase, the data persist feature only works if you save the current progress within the game menu inside Overworld, it does not save it automatically.
