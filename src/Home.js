@@ -2,7 +2,7 @@
 
 import { css } from '@emotion/react';
 
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 import { useQuery, useLazyQuery } from '@apollo/client';
 
@@ -10,6 +10,7 @@ import Background from './components/Background';
 import Message from './components/Message/Message';
 import Person from './components/Person';
 import Fade from './components/Fade/Fade';
+import Loading from './components/Loading';
 
 import { useStore } from './lib/context';
 import { GET_POKEMONS, GET_POKEMON_DETAIL } from './lib/graphql/queries';
@@ -29,11 +30,11 @@ import {
   STATE
 } from './lib/constant';
 
-import Battle from './views/Battle';
-import Overworld from './views/Overworld';
-import Pokedex from './views/Pokedex';
-import MyPokemon from './views/MyPokemon';
-import SplashScreen from './views/SplashScreen';
+const Battle = lazy(() => import('./views/Battle'));
+const Overworld = lazy(() => import('./views/Overworld'));
+const Pokedex = lazy(() => import('./views/Pokedex'));
+const MyPokemon = lazy(() => import('./views/MyPokemon'));
+const SplashScreen = lazy(() => import('./views/SplashScreen'));
 
 const Home = () => {
   const { store, dispatch } = useStore();
@@ -225,7 +226,7 @@ const Home = () => {
   }
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Background />
       <div css={css`
         display: flex;
@@ -273,7 +274,7 @@ const Home = () => {
           onTransitionEnd={handleFaderTransitionEnd}
         />
       </div>
-    </>
+    </Suspense>
   )
 }
 

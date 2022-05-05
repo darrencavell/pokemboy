@@ -106,6 +106,7 @@ const SplashScreen = props => {
           `}>
             <img
               src="/assets/pokemboy.png"
+              srcset="/assets/pokemboy-high.png 2x"
               width={320}
               height={320}
               alt="pokemboy-splash-screen"
