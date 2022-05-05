@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-
 import { css } from '@emotion/react';
 
 import Close from '../components/Close';

@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 
 import Close from '../components/Close';
+import Box from '../components/Box/Box';
+import PokemonDetail from '../components/Pokemon/PokemonDetail';
 
 import { useStore } from '../lib/context';
 import { EVENTS, FADE, GAME_TYPE, MAIN, OVERWORLD, TEXT_MESSAGE } from '../lib/constant';
-import Box from '../components/Box/Box';
-import PokemonDetail from '../components/Pokemon/PokemonDetail';
 
 const MyPokemon = props => {
   const {
@@ -23,8 +23,8 @@ const MyPokemon = props => {
     isOpen: false,
     pokemon: null
   });
-  
-  console.log('state', state);
+
+  console.log('state', state, loadingDataPokemonDetail);
 
   const handleClose = () => {
     const currentEvents = [...store.app.events];
@@ -37,6 +37,7 @@ const MyPokemon = props => {
   }
 
   const handleClickPokemonDetail = (payload) => {
+    console.log('handleClickPokemonDetail');
     setState({
       ...state,
       isOpen: true,
@@ -54,6 +55,7 @@ const MyPokemon = props => {
   }
 
   const handleClosePokemonDetail = () => {
+    console.log('handleClosePokemonDetail');
     setState({
       ...state,
       isOpen: false
@@ -61,6 +63,7 @@ const MyPokemon = props => {
   }
 
   const handleReleasePokemon = () => {
+    console.log('handleReleasePokemon');
     setState({
       ...state,
       isOpen: false
@@ -134,7 +137,6 @@ const MyPokemon = props => {
     if (dataPokemonDetail && !loadingDataPokemonDetail) {
       setState({
         ...state,
-        isOpen: false,
         pokemon: {
           ...state.pokemon,
           ...dataPokemonDetail

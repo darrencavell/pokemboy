@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 const KeyboardArrowController = props => {
   const {
-    arrows,
-    setArrows,
+    directions,
+    onDirection,
     onPressed,
     onReleased
   } = props;
@@ -11,17 +11,17 @@ const KeyboardArrowController = props => {
   const body = document.getElementsByTagName('body')[0];
 
   useEffect(() => {
-    const upKeyPressed = () => { setArrows(onPressed('UP', arrows)) };
-    const upKeyReleased = () => { setArrows(onReleased('UP', arrows)) };
+    const upKeyPressed = () => { onDirection(onPressed('UP', directions)) };
+    const upKeyReleased = () => { onDirection(onReleased('UP', directions)) };
 
-    const downKeyPressed = () => { setArrows(onPressed('DOWN', arrows)) };
-    const downKeyReleased = () => { setArrows(onReleased('DOWN', arrows)) };
+    const downKeyPressed = () => { onDirection(onPressed('DOWN', directions)) };
+    const downKeyReleased = () => { onDirection(onReleased('DOWN', directions)) };
 
-    const leftKeyPressed = () => { setArrows(onPressed('LEFT', arrows)) };
-    const leftKeyReleased = () => { setArrows(onReleased('LEFT', arrows)) };
+    const leftKeyPressed = () => { onDirection(onPressed('LEFT', directions)) };
+    const leftKeyReleased = () => { onDirection(onReleased('LEFT', directions)) };
 
-    const rightKeyPressed = () => { setArrows(onPressed('RIGHT', arrows)) };
-    const rightKeyReleased = () => { setArrows(onReleased('RIGHT', arrows)) };
+    const rightKeyPressed = () => { onDirection(onPressed('RIGHT', directions)) };
+    const rightKeyReleased = () => { onDirection(onReleased('RIGHT', directions)) };
 
     const handleUpKey = keyBinding([38, 87], upKeyPressed, upKeyReleased); // 38 = up, 87 = w
     const handleDownKey = keyBinding([40, 83], downKeyPressed, downKeyReleased); // 40 = down, 83 = s

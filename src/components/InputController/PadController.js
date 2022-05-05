@@ -5,14 +5,21 @@ import { css } from '@emotion/react';
 import { touchDevice } from '../../lib/utils';
 
 const PadController = props => {
-  const { size, arrows, events, setArrows, onPressed, onReleased } = props;
+  const {
+    size,
+    directions,
+    events,
+    onDirection,
+    onPressed,
+    onReleased
+  } = props;
 
   const handleTouchStart = direction => {
-    setArrows(onPressed(direction, arrows));
+    onDirection(onPressed(direction, directions));
   }
 
   const handleTouchEnd = direction => {
-    setArrows(onReleased(direction, arrows));
+    onDirection(onReleased(direction, directions));
   }
 
   const baseButtonCss = css`
